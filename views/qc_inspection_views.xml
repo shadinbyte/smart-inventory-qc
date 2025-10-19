@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_qc_inspection_list" model="ir.ui.view">
+        <field name="name">qc.inspection.list</field>
+        <field name="model">qc.inspection</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state=='pass'"
+                  decoration-danger="state=='fail'"
+                  decoration-warning="state=='in_progress'">
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <field name="inspector_id"/>
+                <field name="inspection_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state=='pass'"
+                       decoration-danger="state=='fail'"
+                       decoration-warning="state=='in_progress'"/>
+                <field name="pass_rate" widget="percentage"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_qc_inspection_form" model="ir.ui.view">
+        <field name="name">qc.inspection.form</field>
+        <field name="model">qc.inspection</field>
+        <field name="arch" type="xml">
+            <form>
+             <header>
+                    <button name="action_start_inspection" string="Start Inspection" type="object" class="oe_highlight"
+                            invisible="state != 'draft'"/>
+                    <button name="action_pass" string="Mark Passed" type="object" class="btn-success"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_fail" string="Mark Failed" type="object" class="btn-danger"
+                            invisible="state != 'in_progress'"/>
+
+                    <!-- ADD PRINT BUTTON -->
+                    <button name="%(action_report_qc_inspection)d"
+                            string="Print Report"
+                            type="action"
+                            class="btn-secondary"/>
+
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,pass,fail"/>
+             </header>
+                <sheet>
+                    <group>
+                        <group string="Basic Info">
+                            <field name="name" readonly="1"/>
+                            <field name="product_id"/>
+                            <field name="lot_id"/>
+                            <field name="picking_id"/>
+                        </group>
+                        <group string="Inspection Details">
+                            <field name="inspector_id"/>
+                            <field name="inspection_date"/>
+                            <field name="pass_rate" widget="percentage" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="Notes">
+                        <field name="notes" nolabel="1" placeholder="Add inspection notes..."/>
+                    </group>
+                </sheet>
+                <!-- REMOVED Chatter Section -->
+            </form>
+        </field>
+    </record>
+
+    <!-- Keep Search View and Action the same -->
+    <record id="view_qc_inspection_search" model="ir.ui.view">
+        <field name="name">qc.inspection.search</field>
+        <field name="model">qc.inspection</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="lot_id"/>
+                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
+                <filter string="In Progress" name="in_progress" domain="[('state','=','in_progress')]"/>
+                <filter string="Passed" name="passed" domain="[('state','=','pass')]"/>
+                <filter string="Failed" name="failed" domain="[('state','=','fail')]"/>
+                <group expand="0" string="Group By">
+                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
+                    <filter string="Inspector" name="group_inspector" context="{'group_by': 'inspector_id'}"/>
+                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_qc_inspection" model="ir.actions.act_window">
+        <field name="name">QC Inspections</field>
+        <field name="res_model">qc.inspection</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_qc_inspection_search"/>
+    </record>
+</odoo>

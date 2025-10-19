@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root Menu -->
+    <menuitem id="menu_smart_qc_root"
+              name="Smart QC"
+              sequence="10"
+              web_icon="smart_inventory_qc,static/description/icon.png"/>
+
+    <!-- Quality Control Menu -->
+    <menuitem id="menu_quality_control"
+              name="Quality Control"
+              parent="menu_smart_qc_root"
+              sequence="10"/>
+
+      <!-- Dashboard Menu -->
+    <menuitem id="menu_qc_dashboard"
+              name="Dashboard"
+              parent="menu_quality_control"
+              action="action_qc_dashboard"
+              sequence="5"/>
+
+    <!-- Inspections Menu -->
+    <menuitem id="menu_qc_inspections"
+              name="Inspections"
+              parent="menu_quality_control"
+              action="action_qc_inspection"
+              sequence="10"/>
+</odoo>

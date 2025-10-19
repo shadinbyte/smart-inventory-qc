@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_qc_inspection">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="doc">
+                <div class="page" style="font-family: Arial, sans-serif; color: #333; line-height: 1.4; padding: 30px 40px;">
+
+                    <!-- Header - More Compact -->
+                    <div class="header" style="border-bottom: 2px solid #2c5aa0; padding-bottom: 20px; margin-bottom: 25px;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 70%;">
+                                    <h1 style="color: #2c5aa0; margin: 0 0 5px 0; font-size: 22px; font-weight: bold;">
+                                        QUALITY CONTROL INSPECTION REPORT
+                                    </h1>
+                                    <p style="color: #666; margin: 0; font-size: 12px;">
+                                        Smart Inventory &amp; Quality Control System
+                                    </p>
+                                </td>
+                                <td style="text-align: right; vertical-align: top;">
+                                    <div style="background: #2c5aa0; color: white; padding: 8px 12px; border-radius: 4px; display: inline-block;">
+                                        <strong style="font-size: 14px;" t-field="doc.name"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Inspection Overview - More Compact -->
+                    <div class="overview" style="background: #f8f9fa; padding: 20px; border-radius: 6px; margin-bottom: 20px;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 33%; vertical-align: top; padding-right: 15px;">
+                                    <div>
+                                        <div style="color: #666; font-size: 11px; margin-bottom: 4px; text-transform: uppercase;">PRODUCT</div>
+                                        <div style="font-size: 14px; font-weight: bold; color: #2c5aa0;" t-field="doc.product_id"/>
+                                    </div>
+                                </td>
+                                <td style="width: 33%; vertical-align: top; padding-right: 15px;">
+                                    <div>
+                                        <div style="color: #666; font-size: 11px; margin-bottom: 4px; text-transform: uppercase;">INSPECTOR</div>
+                                        <div style="font-size: 14px; font-weight: bold; color: #2c5aa0;" t-field="doc.inspector_id"/>
+                                    </div>
+                                </td>
+                                <td style="width: 33%; vertical-align: top;">
+                                    <div>
+                                        <div style="color: #666; font-size: 11px; margin-bottom: 4px; text-transform: uppercase;">INSPECTION DATE</div>
+                                        <div style="font-size: 14px; font-weight: bold; color: #2c5aa0;" t-field="doc.inspection_date"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Status Card - More Compact -->
+                    <div class="status-card" style="background: white; border: 1px solid #e0e0e0; border-radius: 6px; padding: 20px; margin-bottom: 20px; text-align: center;">
+                        <div style="font-size: 18px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase;"
+                             t-att-style="doc.state == 'pass' and 'color: #28a745;' or doc.state == 'fail' and 'color: #dc3545;' or 'color: #ffc107;'">
+                            <t t-if="doc.state == 'pass'">QUALITY INSPECTION PASSED</t>
+                            <t t-elif="doc.state == 'fail'">QUALITY INSPECTION FAILED</t>
+                            <t t-else="">INSPECTION IN PROGRESS</t>
+                        </div>
+                        <div style="font-size: 16px; color: #666;">
+                            Pass Rate: <span style="font-weight: bold; color: #2c5aa0;" t-field="doc.pass_rate"/>%
+                        </div>
+                    </div>
+
+                    <!-- Two Column Layout for Details and Metrics -->
+                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
+                        <!-- Inspection Details - Left Column -->
+                        <div style="flex: 1;">
+                            <h3 style="color: #2c5aa0; margin: 0 0 15px 0; font-size: 16px;">
+                                Inspection Details
+                            </h3>
+
+                            <table style="width: 100%; border-collapse: collapse; border: 1px solid #d0d0d0; border-radius: 4px; overflow: hidden;">
+                                <tr>
+                                    <td style="padding: 12px 15px; border-bottom: 1px solid #e8e8e8; font-weight: bold; color: #555; background: #f8f9fa; font-size: 12px;">
+                                        Product Reference
+                                    </td>
+                                    <td style="padding: 12px 15px; border-bottom: 1px solid #e8e8e8; background: white; font-size: 12px;">
+                                        <span t-field="doc.product_id"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 15px; border-bottom: 1px solid #e8e8e8; font-weight: bold; color: #555; background: #f8f9fa; font-size: 12px;">
+                                        Lot/Serial Number
+                                    </td>
+                                    <td style="padding: 12px 15px; border-bottom: 1px solid #e8e8e8; background: white; font-size: 12px;">
+                                        <t t-if="doc.lot_id">
+                                            <span t-field="doc.lot_id"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span style="color: #999; font-style: italic;">Not specified</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 15px; border-bottom: 1px solid #e8e8e8; font-weight: bold; color: #555; background: #f8f9fa; font-size: 12px;">
+                                        Source Transfer
+                                    </td>
+                                    <td style="padding: 12px 15px; border-bottom: 1px solid #e8e8e8; background: white; font-size: 12px;">
+                                        <t t-if="doc.picking_id">
+                                            <span t-field="doc.picking_id"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span style="color: #999; font-style: italic;">Manual inspection</span>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px 15px; font-weight: bold; color: #555; background: #f8f9fa; font-size: 12px;">
+                                        Final Result
+                                    </td>
+                                    <td style="padding: 12px 15px; background: white; font-size: 12px;">
+                                        <span t-if="doc.state == 'pass'" style="color: #28a745; font-weight: bold; text-transform: uppercase;">
+                                            Approved
+                                        </span>
+                                        <span t-elif="doc.state == 'fail'" style="color: #dc3545; font-weight: bold; text-transform: uppercase;">
+                                            Rejected
+                                        </span>
+                                        <span t-else="" style="color: #ffc107; font-weight: bold; text-transform: uppercase;" t-field="doc.state"/>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <!-- Quality Metrics - Right Column -->
+                        <div style="flex: 1;">
+                            <h3 style="color: #2c5aa0; margin: 0 0 15px 0; font-size: 16px;">Quality Metrics</h3>
+
+                            <div style="background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                                <!-- Progress Bar -->
+                                <div style="margin-bottom: 15px;">
+                                    <div style="display: flex; justify-content: space-between; margin-bottom: 8px;">
+                                        <span style="font-weight: bold; color: #555; font-size: 12px;">Pass Rate</span>
+                                        <span style="font-weight: bold; color: #2c5aa0; font-size: 12px;" t-field="doc.pass_rate"/>%
+                                    </div>
+                                    <div style="background: #e9ecef; height: 12px; border-radius: 6px; overflow: hidden;">
+                                        <div t-att-style="'width: ' + str(doc.pass_rate) + '%; height: 100%; background: ' + ('#28a745' if doc.pass_rate >= 80 else '#dc3545') + ';'"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Quality Rating -->
+                                <div style="text-align: center; padding: 15px; background: white; border-radius: 4px; border: 1px solid #e0e0e0;">
+                                    <div style="color: #666; font-size: 12px; margin-bottom: 8px; text-transform: uppercase;">Quality Rating</div>
+                                    <div t-att-style="'font-size: 18px; font-weight: bold; color: ' + ('#28a745' if doc.pass_rate >= 90 else '#ffc107' if doc.pass_rate >= 70 else '#dc3545')">
+                                        <t t-if="doc.pass_rate >= 90">EXCELLENT</t>
+                                        <t t-elif="doc.pass_rate >= 70">GOOD</t>
+                                        <t t-elif="doc.pass_rate >= 50">FAIR</t>
+                                        <t t-else="">POOR</t>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Notes Section - Compact -->
+                    <t t-if="doc.notes">
+                        <div class="notes-section" style="border-left: 3px solid #2c5aa0; padding: 15px; background: #f8f9fa; margin-bottom: 20px;">
+                            <h3 style="color: #2c5aa0; margin: 0 0 10px 0; font-size: 16px;">Inspection Notes</h3>
+                            <div style="color: #555; line-height: 1.5; font-size: 12px; max-height: 150px; overflow: hidden;" t-field="doc.notes"/>
+                        </div>
+                    </t>
+
+                    <!-- Footer - Compact -->
+                    <div class="footer" style="margin-top: 30px; padding-top: 15px; border-top: 1px solid #e0e0e0;">
+                        <table style="width: 100%;">
+                            <tr>
+                                <td>
+                                    <div style="color: #666; font-size: 10px; line-height: 1.4;">
+                                        <strong>Generated by:</strong> Smart QC System<br/>
+                                        <strong>Date:</strong> <span t-esc="datetime.datetime.now().strftime('%b %d, %Y at %H:%M')"/><br/>
+                                        <strong>Document ID:</strong> <span t-field="doc.name"/>
+                                    </div>
+                                </td>
+                                <td style="text-align: right;">
+                                    <div style="color: #999; font-size: 9px; font-style: italic; line-height: 1.4;">
+                                        CONFIDENTIAL - QUALITY CONTROL<br/>
+                                        Unauthorized distribution prohibited
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+</odoo>
