@@ -4,13 +4,13 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?style=for-the-badge&logo=python)
 ![License](https://img.shields.io/badge/License-LGPL--3.0-green?style=for-the-badge)
 
-A practical Odoo module I built to bring quality control inspections directly into the inventory workflow. Instead of dealing with paper forms and manual tracking, everything happens right inside Odoo where your stock operations already live.
+I built a practical Odoo module to integrate quality control inspections directly into the inventory workflow. Instead of dealing with paper forms and manual tracking, everything happens right inside Odoo, where your stock operations already live.
 
 ## Why I Built This
 
 During my time working with inventory systems, I kept seeing the same pain points:
 
-- Quality checks getting skipped during busy receiving periods
+- Quality checks are getting skipped during busy receiving periods
 - No clear paper trail when products failed inspection
 - Frustrated warehouse teams juggling multiple systems
 - Management asking "which supplier keeps sending us bad parts?" with no easy way to answer
@@ -185,12 +185,10 @@ Ideas I'm considering for v2:
 
 ## Contributing
 
-This is a portfolio project, but I'm open to suggestions! If you see ways to improve it or have ideas for features, feel free to open an issue or reach out.
+This is a portfolio project, but I'm open to suggestions! Feel free to open an issue or reach out if you see ways to improve it or have ideas for features.
 
 ## License
 
 Licensed under LGPL-3.0 - same as Odoo Community Edition.
 
 ---
-
-**About Me**: I'm a developer focused on building practical business solutions with Odoo. This project showcases my ability to understand real business problems and create tools that solve them. If you're looking for someone who can bridge the gap between technical implementation and business needs, let's talk.
