@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Add QC smart button to stock picking form -->
     <record id="view_picking_form_inherit_qc" model="ir.ui.view">
         <field name="name">stock.picking.form.inherit.qc</field>
         <field name="model">stock.picking</field>
         <field name="inherit_id" ref="stock.view_picking_form"/>
         <field name="arch" type="xml">
-            <!-- Add buttons to header -->
-            <xpath expr="//header" position="inside">
-                <button name="action_create_qc_inspection"
-                        string="Create QC Inspection"
-                        type="object"
-                        class="btn-primary"/>
-                <button name="action_view_qc_inspections"
-                        string="QC Inspections"
-                        type="object"
-                        class="btn-secondary"/>
-                <field name="qc_inspection_count" widget="statinfo" string="QC Inspections"/>
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_qc_inspections" type="object" class="oe_stat_button" icon="fa-check-square" invisible="qc_inspection_count == 0">
+                    <field name="qc_inspection_count" widget="statinfo" string="QC Inspections"/>
+                </button>
+                <button name="action_create_qc_inspection" type="object" class="oe_stat_button" icon="fa-plus-square" string="Create QC" invisible="picking_type_code != 'incoming' or state not in ['assigned', 'confirmed', 'done']" groups="smart_inventory_qc.group_qc_inspector"/>
+            </xpath>
+
+            <xpath expr="//field[@name='scheduled_date']" position="after">
+                <field name="qc_status" widget="badge" invisible="qc_status == 'none'" decoration-success="qc_status == 'passed'" decoration-danger="qc_status == 'failed'" decoration-info="qc_status == 'in_progress'" decoration-warning="qc_status == 'pending'"/>
+                <field name="require_qc" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_picking_tree_inherit_qc" model="ir.ui.view">
+        <field name="name">stock.picking.tree.inherit.qc</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_internal_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='name']" position="after">
+                <field name="qc_status" optional="show"/>
             </xpath>
         </field>
     </record>

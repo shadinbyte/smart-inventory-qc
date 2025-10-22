@@ -1,0 +1,197 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="qc_dashboard_template" name="QC Dashboard">
+        <t t-call="web.basic_layout">
+            <div class="o_content" style="padding: 20px;">
+
+                <!-- Header -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <h2 class="fw-bold">Quality Control Dashboard</h2>
+                        <p class="text-muted">Real-time inspection metrics and performance overview</p>
+                    </div>
+                </div>
+
+                <!-- Today's Stats -->
+                <div class="row mb-4">
+                    <div class="col-12 mb-3">
+                        <h5>Today's Overview</h5>
+                    </div>
+
+                    <!-- Total Inspections -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <p style="color: #5b5b5bff; margin: 0; font-size: 12px;">TOTAL INSPECTIONS</p>
+                                    <h3 style="margin: 5px 0; color: #667eea;">
+                                        <t t-esc="today_total"/>
+                                    </h3>
+                                </div>
+                                <div style="background: #667eea; color: white; padding: 10px; border-radius: 50%;">
+                                    📋
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pending -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <p style="color: #5b5b5bff; margin: 0; font-size: 12px;">PENDING</p>
+                                    <h3 style="margin: 5px 0; color: #f59e0b;">
+                                        <t t-esc="today_pending"/>
+                                    </h3>
+                                </div>
+                                <div style="background: #f59e0b; color: white; padding: 10px; border-radius: 50%;">
+                                    ⏱️
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Passed -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <p style="color: #5b5b5bff; margin: 0; font-size: 12px;">PASSED</p>
+                                    <h3 style="margin: 5px 0; color: #10b981;">
+                                        <t t-esc="today_passed"/>
+                                    </h3>
+                                </div>
+                                <div style="background: #10b981; color: white; padding: 10px; border-radius: 50%;">
+                                    ✅
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Failed -->
+                    <div class="col-lg-3 col-md-6 mb-3">
+                        <div class="card" style="border: 1px solid #ddd; padding: 15px; border-radius: 5px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <p style="color: #5b5b5bff; margin: 0; font-size: 12px;">FAILED</p>
+                                    <h3 style="margin: 5px 0; color: #ef4444;">
+                                        <t t-esc="today_failed"/>
+                                    </h3>
+                                </div>
+                                <div style="background: #ef4444; color: white; padding: 10px; border-radius: 50%;">
+                                    ❌
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Performance Cards -->
+                <div class="row mb-4">
+                    <!-- Week Performance -->
+                    <div class="col-lg-6 mb-3">
+                        <div class="card" style="border: 1px solid #ddd; padding: 20px; border-radius: 5px;">
+                            <h6 style="margin: 0 0 15px 0; color: #5b5b5bff;">THIS WEEK PERFORMANCE</h6>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="color: #5b5b5bff;">Pass Rate</span>
+                                <span style="font-weight: bold; font-size: 24px; color: #667eea;">
+                                    <t t-esc="week_pass_rate"/>
+%
+                                </span>
+                            </div>
+                            <div style="background: #e9ecef; height: 10px; border-radius: 5px; margin-bottom: 10px;">
+                                <div t-att-style="'width: ' + str(week_pass_rate) + '%; background: #667eea; height: 100%; border-radius: 5px;'"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: #5b5b5bff; font-size: 12px;">
+                                <span>
+                                    <t t-esc="week_passed"/>
+ passed</span>
+                                <span>
+                                    <t t-esc="week_total"/>
+ total</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Month Performance -->
+                    <div class="col-lg-6 mb-3">
+                        <div class="card" style="border: 1px solid #ddd; padding: 20px; border-radius: 5px;">
+                            <h6 style="margin: 0 0 15px 0; color: #5b5b5bff;">THIS MONTH PERFORMANCE</h6>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                                <span style="color: #5b5b5bff;">Pass Rate</span>
+                                <span style="font-weight: bold; font-size: 24px; color: #667eea;">
+                                    <t t-esc="month_pass_rate"/>
+%
+                                </span>
+                            </div>
+                            <div style="background: #e9ecef; height: 10px; border-radius: 5px; margin-bottom: 10px;">
+                                <div t-att-style="'width: ' + str(month_pass_rate) + '%; background: #667eea; height: 100%; border-radius: 5px;'"></div>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; color: #5b5b5bff; font-size: 12px;">
+                                <span>
+                                    <t t-esc="month_passed"/>
+ passed</span>
+                                <span>
+                                    <t t-esc="month_total"/>
+ total</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Failures -->
+                <t t-if="recent_failures">
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="card" style="border: 1px solid #ddd; padding: 20px; border-radius: 5px;">
+                                <h6 style="margin: 0 0 15px 0; color: #5b5b5bff;">RECENT FAILED INSPECTIONS</h6>
+                                <table style="width: 100%; border-collapse: collapse;">
+                                    <thead>
+                                        <tr style="background: #f8f9fa;">
+                                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Reference</th>
+                                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Product</th>
+                                            <th style="padding: 10px; text-align: left; border-bottom: 1px solid #ddd;">Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="recent_failures" t-as="failure">
+                                            <tr>
+                                                <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                                                    <a t-attf-href="/web#id=#{failure.id}&amp;model=qc.inspection&amp;view_type=form" style="color: #667eea; text-decoration: none;">
+                                                        <t t-esc="failure.name"/>
+                                                    </a>
+                                                </td>
+                                                <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                                                    <t t-esc="failure.product_id.name"/>
+                                                </td>
+                                                <td style="padding: 10px; border-bottom: 1px solid #eee;">
+                                                    <t t-esc="failure.inspection_date.strftime('%Y-%m-%d') if failure.inspection_date else ''"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+
+                <!-- Quick Actions -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card" style="border: 1px solid #ddd; padding: 20px; border-radius: 5px;">
+                            <h6 style="margin: 0 0 15px 0; color: #5b5b5bff;">QUICK ACTIONS</h6>
+                            <div>
+                                <a href="/web#action=smart_inventory_qc.action_qc_inspection" style="background: #667eea; color: white; padding: 10px 15px; border-radius: 3px; text-decoration: none; margin-right: 10px; display: inline-block; margin-bottom: 10px;">
+                                    📋 All Inspections
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </t>
+    </template>
+</odoo>

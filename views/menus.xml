@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Root Menu -->
-    <menuitem id="menu_smart_qc_root"
-              name="Smart QC"
-              sequence="10"
-              web_icon="smart_inventory_qc,static/description/icon.png"/>
+  <menuitem id="menu_qc_root" name="Smart QC" sequence="50" web_icon="smart_inventory_qc,static/description/icon.png"/>
 
-    <!-- Quality Control Menu -->
-    <menuitem id="menu_quality_control"
-              name="Quality Control"
-              parent="menu_smart_qc_root"
-              sequence="10"/>
+  <menuitem id="menu_qc_dashboard" name="Dashboard" parent="menu_qc_root" action="action_qc_dashboard_open" sequence="5"/>
 
-      <!-- Dashboard Menu -->
-    <menuitem id="menu_qc_dashboard"
-              name="Dashboard"
-              parent="menu_quality_control"
-              action="action_qc_dashboard"
-              sequence="5"/>
+  <record id="action_qc_dashboard_open" model="ir.actions.act_url">
+    <field name="name">QC Dashboard</field>
+    <field name="url">/qc/dashboard</field>
+    <field name="target">self</field>
+  </record>
 
-    <!-- Inspections Menu -->
-    <menuitem id="menu_qc_inspections"
-              name="Inspections"
-              parent="menu_quality_control"
-              action="action_qc_inspection"
-              sequence="10"/>
+  <menuitem id="menu_qc_operations" name="Operations" parent="menu_qc_root" sequence="10"/>
+
+  <menuitem id="menu_qc_inspections" name="Quality Inspections" parent="menu_qc_operations" action="action_qc_inspection" sequence="10"/>
+
+  <menuitem id="menu_qc_reporting" name="Reporting" parent="menu_qc_root" sequence="20"/>
+
+  <menuitem id="menu_qc_analysis" name="Quality Analysis" parent="menu_qc_reporting" action="action_qc_analysis" sequence="10"/>
+
+  <menuitem id="menu_qc_supplier_analysis" name="Supplier Quality" parent="menu_qc_reporting" action="action_qc_supplier_analysis" sequence="20"/>
+
+  <menuitem id="menu_qc_configuration" name="Configuration" parent="menu_qc_root" sequence="100" groups="smart_inventory_qc.group_qc_manager"/>
 </odoo>

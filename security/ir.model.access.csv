@@ -1,3 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_qc_inspection_user,qc.inspection.user,model_qc_inspection,base.group_user,1,1,1,0
-access_qc_inspection_manager,qc.inspection.manager,model_qc_inspection,base.group_system,1,1,1,1
+access_qc_inspection_inspector,qc.inspection.inspector,model_qc_inspection,group_qc_inspector,1,1,1,0
+access_qc_inspection_manager,qc.inspection.manager,model_qc_inspection,group_qc_manager,1,1,1,1
+access_qc_inspection_line_inspector,qc.inspection.line.inspector,model_qc_inspection_line,group_qc_inspector,1,1,1,1
+access_qc_inspection_line_manager,qc.inspection.line.manager,model_qc_inspection_line,group_qc_manager,1,1,1,1
+access_qc_inspection_line_all,qc.inspection.line.all,model_qc_inspection_line,,1,1,1,1
+access_qc_inspection_user,qc.inspection.user,model_qc_inspection,base.group_user,1,0,0,0
+access_stock_picking_qc,stock.picking.qc,stock.model_stock_picking,group_qc_inspector,1,1,0,0

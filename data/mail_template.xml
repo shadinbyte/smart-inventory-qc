@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="email_qc_result" model="mail.template">
+            <field name="name">QC Inspection Result</field>
+            <field name="model_id" ref="model_qc_inspection"/>
+            <field name="subject">QC Result: ${object.name} - ${object.state.upper()}</field>
+            <field name="email_from">${(object.company_id.email or user.email)|safe}</field>
+            <field name="email_to">${object.partner_id.email}</field>
+            <field name="body_html" type="html">
+                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+                    <div style="background: #2c5aa0; color: white; padding: 20px; text-align: center;">
+                        <h2 style="margin: 0;">Quality Control Inspection Result</h2>
+                    </div>
+
+                    <div style="padding: 30px; background: #f8f9fa;">
+                        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+                            <h3 style="color: #2c5aa0; margin-top: 0;">Inspection Details</h3>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 8px 0;">
+                                        <strong>Inspection #:</strong>
+                                    </td>
+                                    <td style="padding: 8px 0;">${object.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0;">
+                                        <strong>Product:</strong>
+                                    </td>
+                                    <td style="padding: 8px 0;">${object.product_id.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0;">
+                                        <strong>Transfer:</strong>
+                                    </td>
+                                    <td style="padding: 8px 0;">${object.picking_id.name or 'N/A'}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0;">
+                                        <strong>Inspector:</strong>
+                                    </td>
+                                    <td style="padding: 8px 0;">${object.inspector_id.name}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0;">
+                                        <strong>Date:</strong>
+                                    </td>
+                                    <td style="padding: 8px 0;">${format_datetime(object.inspection_date, dt_format='medium')}</td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div style="background: white; padding: 20px; border-radius: 8px; margin-bottom: 20px; text-align: center;">
+                            <div style="font-size: 24px; font-weight: bold; margin-bottom: 8px; text-transform: uppercase;" t-att-style="'color: ' + ('#28a745' if object.state == 'pass' else '#dc3545')">
+                                ${object.state.upper()}
+                            </div>
+                            <div style="font-size: 18px; color: #666;">
+                                Pass Rate: <strong>${'%.1f' % object.pass_rate}%</strong>
+                            </div>
+                        </div>
+
+                        <div style="background: white; padding: 20px; border-radius: 8px;">
+                            <h3 style="color: #2c5aa0; margin-top: 0;">Quantity Summary</h3>
+                            <table style="width: 100%; border-collapse: collapse;">
+                                <tr>
+                                    <td style="padding: 8px 0;">To Inspect:</td>
+                                    <td style="padding: 8px 0;">
+                                        <strong>${object.quantity_to_inspect}</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #28a745;">Accepted:</td>
+                                    <td style="padding: 8px 0;">
+                                        <strong>${object.quantity_accepted}</strong>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #dc3545;">Rejected:</td>
+                                    <td style="padding: 8px 0;">
+                                        <strong>${object.quantity_rejected}</strong>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        % if object.notes:
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin-top: 20px; border-left: 4px solid #ffc107;">
+                            <strong>Notes:</strong>
+                            <br/>
+                            ${object.notes}
+                        </div>
+                        % endif
+                    </div>
+
+                    <div style="padding: 20px; text-align: center; color: #666; font-size: 12px;">
+                        <p>This is an automated message from the Smart QC System.</p>
+                        <p>For questions, please contact ${object.inspector_id.email}</p>
+                    </div>
+                </div>
+            </field>
+        </record>
+    </data>
+</odoo>

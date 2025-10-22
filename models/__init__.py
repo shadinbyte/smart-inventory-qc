@@ -1,1 +1,1 @@
-from . import qc_inspection,stock_extension,dashboard
+from . import qc_inspection, stock_extension

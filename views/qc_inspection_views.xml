@@ -5,19 +5,15 @@
         <field name="name">qc.inspection.list</field>
         <field name="model">qc.inspection</field>
         <field name="arch" type="xml">
-            <list decoration-success="state=='pass'"
-                  decoration-danger="state=='fail'"
-                  decoration-warning="state=='in_progress'">
+            <list decoration-success="state=='pass'" decoration-danger="state=='fail'" decoration-muted="state=='cancel'" decoration-info="state=='in_progress'">
                 <field name="name"/>
-                <field name="product_id"/>
-                <field name="lot_id"/>
-                <field name="inspector_id"/>
                 <field name="inspection_date"/>
-                <field name="state" widget="badge"
-                       decoration-success="state=='pass'"
-                       decoration-danger="state=='fail'"
-                       decoration-warning="state=='in_progress'"/>
+                <field name="product_id"/>
+                <field name="partner_id" optional="show"/>
+                <field name="inspector_id" widget="many2one_avatar_user"/>
+                <field name="quantity_to_inspect"/>
                 <field name="pass_rate" widget="percentage"/>
+                <field name="state" widget="badge" decoration-success="state=='pass'" decoration-danger="state=='fail'" decoration-info="state=='in_progress'" decoration-muted="state=='cancel'"/>
             </list>
         </field>
     </record>
@@ -28,46 +24,79 @@
         <field name="model">qc.inspection</field>
         <field name="arch" type="xml">
             <form>
-             <header>
-                    <button name="action_start_inspection" string="Start Inspection" type="object" class="oe_highlight"
-                            invisible="state != 'draft'"/>
-                    <button name="action_pass" string="Mark Passed" type="object" class="btn-success"
-                            invisible="state != 'in_progress'"/>
-                    <button name="action_fail" string="Mark Failed" type="object" class="btn-danger"
-                            invisible="state != 'in_progress'"/>
-
-                    <!-- ADD PRINT BUTTON -->
-                    <button name="%(action_report_qc_inspection)d"
-                            string="Print Report"
-                            type="action"
-                            class="btn-secondary"/>
-
-                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,pass,fail"/>
-             </header>
+                <header>
+                    <button name="action_start_inspection" string="Start Inspection" type="object" class="oe_highlight" invisible="state != 'draft'"/>
+                    <button name="action_pass" string="Pass" type="object" class="oe_highlight" invisible="state != 'in_progress'"/>
+                    <button name="action_fail" string="Fail" type="object" class="btn-danger" invisible="state != 'in_progress'"/>
+                    <button name="action_cancel" string="Cancel" type="object" invisible="state in ['pass', 'fail', 'cancel']"/>
+                    <button name="action_reset_to_draft" string="Reset to Draft" type="object" groups="smart_inventory_qc.group_qc_manager" invisible="state == 'draft'"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,in_progress,pass"/>
+                </header>
                 <sheet>
-                    <group>
-                        <group string="Basic Info">
+                    <div class="oe_button_box" name="button_box">
+                        <button name="%(action_report_qc_inspection)d" type="action" class="oe_stat_button" icon="fa-print">
+                            <span>Print</span>
+                        </button>
+                    </div>
+
+                    <widget name="web_ribbon" title="Passed" bg_color="bg-success" invisible="state != 'pass'"/>
+                    <widget name="web_ribbon" title="Failed" bg_color="bg-danger" invisible="state != 'fail'"/>
+
+                    <div class="oe_title">
+                        <h1>
                             <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+
+                    <group>
+                        <group string="Product Information">
                             <field name="product_id"/>
-                            <field name="lot_id"/>
-                            <field name="picking_id"/>
+                            <field name="lot_id" domain="[('product_id', '=', product_id)]"/>
+                            <field name="picking_id" readonly="1"/>
+                            <field name="partner_id" readonly="1"/>
                         </group>
                         <group string="Inspection Details">
-                            <field name="inspector_id"/>
+                            <field name="inspector_id" widget="many2one_avatar_user"/>
                             <field name="inspection_date"/>
-                            <field name="pass_rate" widget="percentage" readonly="1"/>
+                            <field name="expected_date"/>
+                            <field name="quality_rating" widget="badge"/>
                         </group>
                     </group>
-                    <group string="Notes">
-                        <field name="notes" nolabel="1" placeholder="Add inspection notes..."/>
+
+                    <group>
+                        <group string="Quantities">
+                            <field name="quantity_to_inspect" readonly="state != 'draft'"/>
+                            <field name="quantity_accepted" readonly="state not in ['in_progress']"/>
+                            <field name="quantity_rejected" readonly="state not in ['in_progress']"/>
+                        </group>
+                        <group string="Quality Metrics">
+                            <field name="pass_rate" widget="percentage"/>
+                            <field name="checklist_progress" widget="progressbar" invisible="not checklist_ids"/>
+                        </group>
                     </group>
+
+                    <notebook>
+                        <page string="Inspection Checklist" name="checklist">
+                            <field name="checklist_ids" readonly="state in ['pass', 'fail', 'cancel']">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="name"/>
+                                    <field name="description"/>
+                                    <field name="result" widget="badge"/>
+                                    <field name="remarks"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes" name="notes">
+                            <field name="notes" placeholder="Add inspection notes..."/>
+                        </page>
+                    </notebook>
                 </sheet>
-                <!-- REMOVED Chatter Section -->
             </form>
         </field>
     </record>
 
-    <!-- Keep Search View and Action the same -->
+    <!-- Search View -->
     <record id="view_qc_inspection_search" model="ir.ui.view">
         <field name="name">qc.inspection.search</field>
         <field name="model">qc.inspection</field>
@@ -75,24 +104,68 @@
             <search>
                 <field name="name"/>
                 <field name="product_id"/>
-                <field name="lot_id"/>
-                <filter string="Draft" name="draft" domain="[('state','=','draft')]"/>
-                <filter string="In Progress" name="in_progress" domain="[('state','=','in_progress')]"/>
-                <filter string="Passed" name="passed" domain="[('state','=','pass')]"/>
-                <filter string="Failed" name="failed" domain="[('state','=','fail')]"/>
+                <field name="partner_id"/>
+                <field name="inspector_id"/>
+
+                <filter name="my_inspections" string="My Inspections" domain="[('inspector_id', '=', uid)]"/>
+                <separator/>
+                <filter name="draft" string="Draft" domain="[('state', '=', 'draft')]"/>
+                <filter name="in_progress" string="In Progress" domain="[('state', '=', 'in_progress')]"/>
+                <filter name="passed" string="Passed" domain="[('state', '=', 'pass')]"/>
+                <filter name="failed" string="Failed" domain="[('state', '=', 'fail')]"/>
+
                 <group expand="0" string="Group By">
-                    <filter string="Product" name="group_product" context="{'group_by': 'product_id'}"/>
-                    <filter string="Inspector" name="group_inspector" context="{'group_by': 'inspector_id'}"/>
-                    <filter string="Status" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter name="group_product" string="Product" context="{'group_by': 'product_id'}"/>
+                    <filter name="group_supplier" string="Supplier" context="{'group_by': 'partner_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
                 </group>
             </search>
         </field>
     </record>
 
+    <!-- Kanban View -->
+    <record id="view_qc_inspection_kanban" model="ir.ui.view">
+        <field name="name">qc.inspection.kanban</field>
+        <field name="model">qc.inspection</field>
+        <field name="arch" type="xml">
+            <kanban>
+                <field name="name"/>
+                <field name="product_id"/>
+                <field name="state"/>
+                <field name="pass_rate"/>
+                <templates>
+                    <t t-name="kanban-box">
+                        <div class="oe_kanban_global_click">
+                            <div class="oe_kanban_details">
+                                <strong>
+                                    <field name="name"/>
+                                </strong>
+                                <div>
+                                    <field name="product_id"/>
+                                </div>
+                                <div>Pass Rate: <field name="pass_rate"/>
+%</div>
+                            </div>
+                            <div class="oe_kanban_footer">
+                                <field name="state" widget="badge"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- Action -->
     <record id="action_qc_inspection" model="ir.actions.act_window">
-        <field name="name">QC Inspections</field>
+        <field name="name">Quality Inspections</field>
         <field name="res_model">qc.inspection</field>
-        <field name="view_mode">list,form</field>
-        <field name="search_view_id" ref="view_qc_inspection_search"/>
+        <field name="view_mode">list,kanban,form,pivot,graph</field>
+        <field name="context">{'search_default_my_inspections': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first quality inspection
+            </p>
+        </field>
     </record>
 </odoo>
